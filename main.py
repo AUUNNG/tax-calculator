@@ -1,65 +1,36 @@
-class TaxMain:
-    def __init__(self, name: str, income: float, deductions: float):
-        self._name = name
-        self._income = income
-        self._deductions = deductions
-
-    def calculate_tax(self) -> float:
-        taxable_income = self._income
-        taxable_income -= min(taxable_income*.5, 100000)
-        taxable_income -= 60000
-        taxable_income -= self._deductions
-        if taxable_income <= 150000:
-            return 0
-        elif taxable_income <= 300000:
-            return (taxable_income - 150000) * 0.05
-        elif taxable_income <= 500000:
-            return (taxable_income - 300000) * 0.1 + 7500
-        elif taxable_income <= 750000:
-            return (taxable_income - 500000) * 0.15 + 25000
-        elif taxable_income <= 1000000:
-            return (taxable_income - 750000) * 0.2 + 50000
-        elif taxable_income <= 2000000:
-            return (taxable_income - 1000000) * 0.25 + 120000
-        elif taxable_income <= 5000000:
-            return (taxable_income - 2000000) * 0.3 + 370000
-        else:
-            return (taxable_income - 5000000) * 0.35 + 1170000
-
-    def __str__(self):
-        return f"Name: {self._name}, Income: {self._income}, Deductions: {self._deductions}, Tax Due: {self.calculate_tax()}"
 
 
 class TaxProfileDatabase:
     def __init__(self):
         self.profiles = {}
 
-    def add_profile(self, tax: TaxMain):
+    def add_profile(self, tax: TaxController):
         self.profiles[tax._name] = tax
 
-    def get_profile(self, name: str) -> TaxMain | None:
+    def get_profile(self, name: str) -> TaxController | None:
         return self.profiles.get(name)
 
-    def get_all_profiles(self) -> list[TaxMain]:
+    def get_all_profiles(self) -> list[TaxController]:
         return list(self.profiles.values())
     
     def check_profiles_name(self, name) -> bool:
         return name in self.profiles
 
     def update_profile_name(self, old_name: str, new_name: str) -> bool:
-        if old_name in self.profiles:
-            self.profiles[new_name] = self.profiles.pop(old_name)
-            return True
-        return False
+        if new_name in self.profiles:
+            return False
+        self.profiles[old_name]._name = new_name
+        self.profiles[new_name] = self.profiles.pop(old_name)
+        return True
     
-    def update_profile_income(self, name: str, old_income: float, new_income: float) -> bool:
-        pass
+    def update_profile_income(self, name: str, new_income: float):
+        self.profiles[name]._income = new_income
 
 
-    def update_profile_deductions(self, name: str, old_deductions: float, new_deductions: float) -> bool:
-        pass
+    def update_profile_deductions(self, name: str, new_deductions: float):
+        self.profiles[name]._deductions = new_deductions
 
-class TaxCalculatorSystem:
+class TaxCalculatorView:
     def __init__(self):
         self.db = TaxProfileDatabase()
 
@@ -89,9 +60,11 @@ class TaxCalculatorSystem:
     def ui_add_tax(self):
         print("\nAdding a new tax profile:")
         name = input("  Please enter tax name: ")
+        if self.db.check_profiles_name(name):
+            return print(f"Profile for {name} has been exited.")
         income = float(input("  Please enter income: "))
         deductions = float(input("  Please enter deductions: "))
-        tax = TaxMain(name, income, deductions)
+        tax = TaxController(name, income, deductions)
         self.db.add_profile(tax)
         print(f"Profile for {name} has been added.")
 
@@ -117,28 +90,34 @@ class TaxCalculatorSystem:
         print("\nUpdating tax profile name:")
         old_name = input("  Please enter the current name of the tax: ")
         if self.db.check_profiles_name(old_name) is False:
-            return print("  Profile not found.")
+            return print("Profile not found.")
         new_name = input("  Please enter the new name: ")
         if self.db.update_profile_name(old_name, new_name):
             print(f"Profile name updated from {old_name} to {new_name}.")
         else:
-            print("  Profile for {new_name} has been exited.")
+            print(f"  Profile for {new_name} has been exited.")
 
     def ui_update_profile_income(self):
         print("\nUpdating tax profile income:")
         name = input("  Please enter the profile name: ")
-        if self.db.check_profiles_name(name) is False:
-            return print("Profile not found.")
-        
-        if 
+        if self.db.check_profiles_name(name):
+            new_income = int(input("  Please enter the new income: "))
+            self.db.update_profile_income(name, new_income)
+            return print(f"Profile {name} updated income to {new_income}.")
+        return print("Profile not found.")
 
     def ui_update_profile_deductions(self):
-        pass
+        print("\nUpdating tax profile income:")
+        name = input("  Please enter the profile name: ")
+        if self.db.check_profiles_name(name):
+            new_deductions = int(input("  Please enter the new deductions: "))
+            self.db.update_profile_deductions(name, new_deductions)
+            return print(f"Profile {name} updated deductions to {new_deductions}.")
+        return print("Profile not found.")
 
 def main():
-    system = TaxCalculatorSystem()
+    system = TaxCalculatorView()
     system.ui_main_menu()
-
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,6 @@
-def Tax(value):
+def Tax(value): # 160,0000
     value -= min(value*.5, 100000)
-    value -= 60000
+    value -= 60000 + 30000 + 30000
     if value >= 5000001:
         return ((value-5000000)*.35) + 0 + 7500 + 20000 + 37500 + 50000 + 250000 + 900000
     elif value >= 2000001:
@@ -18,4 +18,4 @@ def Tax(value):
     elif value < 1500001:
         return 0
 
-print(Tax(5000000))
+print(Tax(755000))
