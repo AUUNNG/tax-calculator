@@ -18,4 +18,4 @@ def Tax(value): # 160,0000
     elif value < 1500001:
         return 0
 
-print(Tax(755000))
+print(Tax(250000))

@@ -1,4 +1,33 @@
+class TaxController:
+    def __init__(self, name: str, income: float, deductions: float):
+        self._name = name
+        self._income = income
+        self._deductions = deductions
 
+    def calculate_tax(self) -> float:
+        taxable_income = self._income
+        taxable_income -= min(taxable_income*.5, 100000)
+        taxable_income -= 60000
+        taxable_income -= self._deductions
+        if taxable_income <= 150000:
+            return 0
+        elif taxable_income <= 300000:
+            return (taxable_income - 150000) * 0.05
+        elif taxable_income <= 500000:
+            return (taxable_income - 300000) * 0.1 + 7500
+        elif taxable_income <= 750000:
+            return (taxable_income - 500000) * 0.15 + 25000
+        elif taxable_income <= 1000000:
+            return (taxable_income - 750000) * 0.2 + 50000
+        elif taxable_income <= 2000000:
+            return (taxable_income - 1000000) * 0.25 + 120000
+        elif taxable_income <= 5000000:
+            return (taxable_income - 2000000) * 0.3 + 370000
+        else:
+            return (taxable_income - 5000000) * 0.35 + 1170000
+
+    def __str__(self):
+        return f"Name: {self._name}, Income: {self._income}, Deductions: {self._deductions}, Tax Due: {self.calculate_tax()}"
 
 class TaxProfileDatabase:
     def __init__(self):
