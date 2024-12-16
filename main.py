@@ -1,6 +1,6 @@
-from model import *
-from view import *
-from controller import *
+from model.model import *
+from view.view import *
+from controller.controller import *
 
 def main():
     system = TaxCalculatorView()

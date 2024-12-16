@@ -1,11 +1,11 @@
-from controller import *
+from controller.controller import *
 
 class TaxProfileDatabase:
     def __init__(self):
         self.profiles = {}
 
     def add_profile(self, tax: TaxController):
-        self.profiles[tax._name] = tax
+        return True if self.profiles[tax._name] else False
 
     def get_profile(self, name: str) -> TaxController | None:
         return self.profiles.get(name)

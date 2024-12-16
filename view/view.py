@@ -1,4 +1,4 @@
-from model import *
+from model.model import *
 
 class TaxCalculatorView:
     def __init__(self):
